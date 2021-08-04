@@ -1,34 +1,80 @@
+
 let money, income, addExpenses, deposit, mission, period;
 let budgetDay;
+let expenses = [];
 
-money = 25000;
 income = 'Фриланс';
 addExpenses = 'интернет, коммуналка, проезд, продукты';
 deposit = false;
 mission = 5e6;
-period = 7;
+// period = 7;
 
-money = +prompt('Ваш месячный доход', '25000');
-if(money === 0 || isNaN(money)) {
-    alert('Видимо вы в поисках работы');
-}
+//доход за месяц===============================================================
+let start = function() {
+    money = prompt('Ваш месячный доход', '25000');
+    while (!isNumber(money)) {
+        money = prompt('Ваш месячный доход', '25000');
+    }
+};
+start();
 
+//возможные расходы=============================================================
 addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', '');
     if(addExpenses === null || Number(addExpenses)) {
         alert('Введите корректное значение');
         addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', '');
     }
 
+//наличие депозита===============================================================
 deposit = confirm('Есть ли у вас депозит в банке?');
 
-let expenses1 = prompt('Введите обязательную статью расходов', 'продукты');
-let amount1 = +prompt('Во сколько это обойдется?', '7500');
-let expenses2 = prompt('Введите обязательную статью расходов', 'коммуналка');
-let amount2 = +prompt('Во сколько это обойдется?', '5500');
+//обязательные расходы в месяц====================================================
+function getExpensesMonth() {
+    let sum = 0;
+    
+    for (let i = 0; i < 2; i++) {
+        expenses[i] = prompt('Введите обязательную статью расходов', 'продукты');
+        let amount = prompt('Во сколько это обойдется?', '7500');
+        
+        while (isNaN(parseFloat(amount))) {
+            amount = prompt('Во сколько это обойдется?', '7500');
+        }
+        sum += +amount;
+    }
+
+    return sum;
+}
+
+let expensesAmount = getExpensesMonth();
+console.log(`Расходы за месяц: ${expensesAmount}`);
+console.log(expenses);
+
+//свободные денежные средства в месяц=============================================
+function getAccumulatedMonth() {
+    return money - expensesAmount;
+}
+
 let accumulatedMonth = getAccumulatedMonth();
+console.log(`Свободные денежные средства: ${accumulatedMonth}`);
 
-budgetDay = Math.floor(money / 30 - getExpensesMonth() / 30);
 
+//чистый дневной доход==========================================================
+budgetDay = Math.floor(money / 30 - expensesAmount / 30);
+console.log(`Чистый дневной доход: ${budgetDay}`);
+
+//время, за которое можно накопить нужную сумму===================================
+function getTargetMonth() {
+    
+    return Math.ceil(mission / accumulatedMonth);
+}
+period = getTargetMonth();
+if (period < 0) {
+    console.log(`Цель в ${mission} не будет достигнута.`);
+} else {
+    console.log(`Цель в ${mission} будет достигнута`);
+}
+
+//уровень дохода=================================================================
 function getStatusIncome() {
     if(budgetDay >= 1200) {
         return('У вас высокий уровень дохода');
@@ -43,21 +89,7 @@ function getStatusIncome() {
 console.log(getStatusIncome());
 
 
-function getExpensesMonth() {
-    return amount1 + amount2;
-}
-console.log(getExpensesMonth());
 
-
-function getAccumulatedMonth() {
-    return money - getExpensesMonth();
-}
-console.log(getAccumulatedMonth());
-
-function getTargetMonth() {
-    return Math.ceil(mission / accumulatedMonth);
-}
-console.log(getTargetMonth());
 
 function showTypeOf(item) {
     console.log(item, typeof(item));
@@ -67,9 +99,11 @@ showTypeOf(money);
 showTypeOf(income);
 showTypeOf(deposit);
 
-
+console.log(`Период равен ${period} месяцев и цель достигнуть ${mission} рублей`);
 console.log(addExpenses.length);
-console.log(`Период равен ${getTargetMonth()} месяцев и Цель заработать ${mission} рублей`);
 console.log(addExpenses.toLocaleLowerCase());
 console.log(addExpenses.split(', '));
-console.log(budgetDay);
+
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
