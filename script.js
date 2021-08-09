@@ -1,3 +1,48 @@
+'use strict';
+
+//===========================получение элементов из верстки========================================================
+const calculate = document.getElementById('start');
+console.log(calculate);
+const incomeBtn = document.getElementsByTagName('button')[0];
+console.log(incomeBtn);
+const expensesBtn = document.getElementsByTagName('button')[1];
+console.log(expensesBtn);
+const depositCheck = document.querySelector('#deposit-check');
+console.log(depositCheck);
+const additionalIncomeItem = document.querySelectorAll('.additional_income-item');
+console.log(additionalIncomeItem);
+const budgetDayValue = document.getElementsByClassName('budget_day-value');
+console.log(budgetDayValue);
+const expensesMonthValue = document.getElementsByClassName('expenses_month-value');
+console.log(expensesMonthValue);
+const additionalIncomeValue = document.getElementsByClassName('additional_income-value');
+console.log(additionalIncomeValue);
+const additionalExpensesValue = document.getElementsByClassName('additional_expenses-value');
+console.log(additionalExpensesValue);
+const incomePeriodValue = document.getElementsByClassName('income_period-value');
+console.log(incomePeriodValue);
+const targetMonthValue = document.getElementsByClassName('target_month-value');
+console.log(targetMonthValue);
+const salaryAmount = document.querySelector('.salary-amount');
+console.log(salaryAmount);
+const incomeTitle = document.querySelector('.income-title[type="text"]');
+console.log(incomeTitle);
+const incomeAmount = document.querySelector('.income-amount');
+console.log(incomeAmount);
+const expensesTitle = document.querySelector('.expenses-title[type="text"]');
+console.log(expensesTitle);
+const expensesAmount = document.querySelector('.expenses-amount');
+console.log(expensesAmount);
+const additionalExpensesItem = document.querySelector('.additional_expenses-item');
+console.log(additionalExpensesItem);
+const targetAmount = document.querySelector('.target-amount');
+console.log(targetAmount);
+const budgetMonthValue = document.querySelector('.budget_month-value');
+console.log(budgetMonthValue);
+const range = document.querySelector('.period-select');
+console.log(range);
+
+
 
 //доход за месяц===============================================================
 let money, 
@@ -78,7 +123,7 @@ let appData = {
     },
     getBudget() {
         
-        this.budgetDay = Math.floor(appData.budget / 30 - expensesAmount / 30);
+        this.budgetDay = Math.floor(appData.budget / 30 - expensesAmountMonth / 30);
         this.budgetMonth = this.budget - this.expensesMonth;
     },
     getTargetMonth() {
@@ -119,8 +164,8 @@ console.log(appData);
 
 
 //обязательные расходы в месяц====================================================
-let expensesAmount = appData.getExpensesMonth();
-console.log(`Расходы за месяц: ${expensesAmount}`);
+let expensesAmountMonth = appData.getExpensesMonth();
+console.log(`Расходы за месяц: ${expensesAmountMonth}`);
 
 
 //свободные денежные средства в месяц=============================================
