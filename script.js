@@ -26,7 +26,6 @@ const blockInput = document.querySelectorAll('input[type="text"]');
 const cancel = document.getElementById('cancel');
 
 
-
 let appData = {
     income: {},
     incomeMonth: 0,
@@ -59,6 +58,40 @@ let appData = {
         });
         range.value = 1;
         periodAmount.textContent = 1;
+        cancel.style.display = 'none';
+        calculate.style.display = 'block';
+
+        incomeItem.forEach((item, index) => {
+            if(index > 0 && index < 3) {
+                item.remove();
+                incomeBtn.style.display = 'block';
+            }
+        });
+
+        expensesItems.forEach((item, index) => {
+            if(index > 0 && index < 3) {
+                item.remove();
+                expensesBtn.style.display = 'block';
+            }
+        });
+
+        this.income = {};
+        this.incomeMonth = 0;
+        this.addIncome = [];
+        this.expenses = {};
+        this.addExpenses = [];
+        this.deposit = false;
+        this.percentDeposit = 0;
+        this.moneyDeposit = 0;
+        this.budget = 0;
+        this.budgetDay = 0;
+        this.budgetMonth = 0;
+        this.expensesMonth = 0;
+
+        blockInput.forEach((item) => {
+            item.disabled = false;
+        });
+        console.log(appData)
     },
     showResult() {
         budgetMonthValue.value = this.budgetMonth;
@@ -200,6 +233,15 @@ calculate.addEventListener('click', () => {
     });
     calculate.style.display = 'none';
     cancel.style.display = 'block';
+
+    incomeItem.forEach((item, index) => {
+        item.querySelectorAll('input[type="text"]').forEach((item) => item.disabled = true);
+    });
+
+    expensesItems.forEach((item, index) => {
+        item.querySelectorAll('input[type="text"]').forEach((item) => item.disabled = true);
+    });
+    console.log(appData);
 })
 cancel.addEventListener('click', appData.reset.bind(appData));
 expensesBtn.addEventListener('click', appData.addExpensesBlock.bind(appData));
