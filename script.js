@@ -24,6 +24,9 @@ let incomeItem = document.querySelectorAll('.income-items');
 const periodAmount = document.querySelector('.period-amount');
 const blockInput = document.querySelectorAll('input[type="text"]');
 const cancel = document.getElementById('cancel');
+const depositBank = document.querySelector('.deposit-bank');
+const depositAmount = document.querySelector('.deposit-amount');
+const depositPercent = document.querySelector('.deposit-percent');
 
 
 class AppData {
@@ -64,6 +67,7 @@ class AppData {
         
         this.getAddExpenses();
         this.getAddIncome();
+        this.getInfoDeposit();
         this.getBudget();
         this.showResult();
     }
@@ -107,6 +111,11 @@ class AppData {
         blockInput.forEach((item) => {
             item.disabled = false;
         });
+        depositCheck.checked = false;
+        depositBank.style.display = 'none';
+        depositAmount.style.display = 'none';
+        depositPercent.style.display = 'none';
+        depositBank.value = '';
     }
 
     showResult() {
@@ -197,8 +206,9 @@ class AppData {
     }
 
     getBudget() {
+        const monthDeposit = this.moneyDeposit * (this.percentDeposit / 100);
         this.budgetDay = Math.floor(this.budget / 30 - this.expensesMonth / 30);
-        this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth;
+        this.budgetMonth = this.budget + this.incomeMonth - this.expensesMonth + monthDeposit;
     }
 
     getTargetMonth() {
@@ -218,21 +228,56 @@ class AppData {
     }
 
     getInfoDeposit() {
-        this.deposit = confirm('Есть ли у вас депозит в банке?');
-        if (this.deposit) {
-            this.percentDeposit = prompt('Какой годовой процент?', '7.9');
-                while (!isNumber(this.percentDeposit)) {
-                    this.percentDeposit = prompt('Какой годовой процент?', '7.9');
-                }
-            this.moneyDeposit = prompt('Какая сумма заложена?', '11000');
-                while (!isNumber(this.moneyDeposit)) {
-                    this.moneyDeposit = prompt('Какая сумма заложена?', '11000');
-                }
+        if(this.deposit) {
+            this.percentDeposit = depositPercent.value;
+            this.moneyDeposit = depositAmount.value;
         }
     }
 
     calcSaveMoney() {
         return this.budgetMonth * range.value;
+    }
+
+    changePercent() {
+        const valueSelect = this.value;
+        if(valueSelect === 'other') {
+            depositPercent.style.display = 'inline-block';
+            depositPercent.value = 0;
+
+            depositPercent.addEventListener('change', () => {
+                if(!isNumber(depositPercent.value) || depositPercent.value < 0 || depositPercent.value > 100) {
+                    alert('Введено некорректное значение!');
+                    calculate.setAttribute('disabled', 'true');
+                } else {
+                    this.percentDeposit = depositPercent.value;
+                    calculate.removeAttribute('disabled');
+                }
+
+            });
+            
+            
+        } else {
+            depositPercent.value = valueSelect;
+            depositPercent.style.display = 'none';
+
+        }
+
+    }
+
+    depositHandler() {
+        if(depositCheck.checked) {
+            depositAmount.style.display = 'inline-block';
+            depositBank.style.display = 'inline-block';
+            this.deposit = true;
+            depositBank.addEventListener('change', this.changePercent);
+        } else {
+            depositAmount.style.display = 'none';
+            depositBank.style.display = 'none';
+            depositAmount.value = '';
+            depositBank.value = '';
+            this.deposit = false;
+            depositBank.removeEventListener('change', this.changePercent);
+        }
     }
 
     eventsListeners() {
@@ -261,6 +306,7 @@ class AppData {
         range.addEventListener('input', () => {
             periodAmount.textContent = range.value;
         });
+        depositCheck.addEventListener('change', this.depositHandler.bind(this));
     }
 }
 
@@ -274,4 +320,3 @@ appData.eventsListeners();
 function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
-
